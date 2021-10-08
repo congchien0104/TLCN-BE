@@ -1,0 +1,17 @@
+const express = require("express");
+const validate = require("express-validation");
+const router = express.Router({ mergeParams: true });
+
+const authController = require("../controllers/auth/auth.controller");
+const authValidate = require("../controllers/auth/auth.validate");
+
+router.post("/signup", validate(authValidate.signup), authController.signup);
+router.post("/signin", validate(authValidate.signin), authController.signin);
+router.get("/confirm/:confirmationcode", authController.verifyUser);
+router.post("/refreshtoken", authController.refreshToken);
+
+router.get("/getuser", authController.show);
+router.get("/gettoken", authController.getRefreshToken);
+router.get("/user", authController.index);
+
+module.exports = router;
