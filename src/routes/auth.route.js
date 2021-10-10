@@ -4,8 +4,14 @@ const router = express.Router({ mergeParams: true });
 
 const authController = require("../controllers/auth/auth.controller");
 const authValidate = require("../controllers/auth/auth.validate");
+const verifySignup = require("../middleware/verifySignup");
 
-router.post("/signup", validate(authValidate.signup), authController.signup);
+router.post(
+  "/signup",
+  validate(authValidate.signup),
+  verifySignup.checkDuplicateUsernameOrEmail,
+  authController.signup
+);
 router.post("/signin", validate(authValidate.signin), authController.signin);
 router.get("/confirm/:confirmationcode", authController.verifyUser);
 router.post("/refreshtoken", authController.refreshToken);

@@ -9,7 +9,7 @@ import cors from "cors";
 // import adminRoutes from "./src/routes/admin";
 // import apiMiddleware from "./src/middleware/apiAuth";
 // import adminMiddleware from "./src/middleware/adminAuth";
-// import errorHandler from "./src/middleware/errorHandler";
+import errorHandler from "./src/middleware/errorHandler";
 
 //const userRoutes = require("./src/routes/user");
 const authRoute = require("./src/routes/auth.route");
@@ -45,6 +45,6 @@ app.use("/car", carRoute);
 // app.use('/pub', publicRoutes);
 // app.use('/api', apiMiddleware, apiRoutes);
 // app.use('/api/admin', apiMiddleware, adminMiddleware, adminRoutes);
-// app.use(errorHandler);
+app.use(errorHandler);
 
 module.exports = app;
