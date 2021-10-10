@@ -14,6 +14,7 @@ import cors from "cors";
 //const userRoutes = require("./src/routes/user");
 const authRoute = require("./src/routes/auth.route");
 const userRoute = require("./src/routes/user.route");
+const carRoute = require("./src/routes/car.route");
 const userMiddleware = require("./src/middleware/authJwt");
 
 dotenv.config();
@@ -39,6 +40,7 @@ app.get("/", (req, res) => {
 app.use("/auth", authRoute);
 //app.use("/user", userRoutes);
 app.use("/user", userMiddleware.verifyToken, userRoute);
+app.use("/car", carRoute);
 
 // app.use('/pub', publicRoutes);
 // app.use('/api', apiMiddleware, apiRoutes);

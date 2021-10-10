@@ -2,30 +2,39 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.bulkInsert("Roles", [
+    return queryInterface.bulkInsert("Companies", [
       {
-        name: "customer",
+        name: "Cong Chien",
+        address: "Dak Lak",
+        phone: 357287247,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        name: "company",
+        name: "Hoang Minh",
+        address: "TP HCM",
+        phone: 357287248,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        name: "moderator",
+        name: "Mai Duyen",
+        address: "Nha Trang",
+        phone: 357287249,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        name: "admin",
+        name: "Hong Tham",
+        address: "Da Nang",
+        phone: 35728725,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
     ]);
   },
+
   down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete("Roles", null, {});
+    return queryInterface.bulkDelete("Cars", null, {});
   },
 };

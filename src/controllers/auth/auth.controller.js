@@ -197,61 +197,44 @@ exports.refreshToken = async (req, res) => {
   }
 };
 
-// Test one - one, User - RefreshToken
-exports.show = (req, res) => {
-  User.findByPk(req.body.id, {
-    include: [
-      {
-        model: RefreshToken,
-        as: "refreshtoken",
-      },
-    ],
-  })
-    .then((user) => {
-      if (!user) {
-        return res.status(404).json({ message: "User Not Found" });
-      }
-
-      return res.status(200).json(user);
-    })
-    .catch((error) => {
-      return res.status(400).json(error);
+exports.forgot = async (req, res) => {
+  try {
+    console.log(req.body.email);
+    const user = await User.findOne({
+      where: { email: req.body.email },
     });
+    if (!user) {
+      return res.send("Email not found!");
+    }
+    nodemailer.sendConfirmationEmail(
+      user.username,
+      user.email,
+      user.confirmationcode
+    );
+    return successResponse(req, res, {});
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
 };
 
-exports.getRefreshToken = (req, res) => {
-  RefreshToken.findByPk(req.body.q, {
-    include: [
-      {
-        model: User,
-        as: "rftoken",
-      },
-    ],
-  })
-    .then((rtoken) => {
-      console.log(rtoken);
-      return res.send(rtoken);
-    })
-    .catch((err) => {
-      console.log(">> Error while finding rtoken: ", err);
-      return res.status(400).json(err);
+exports.reset = async (req, res) => {
+  //res.send("ok");
+  try {
+    console.log(req.params.confirmationcode);
+    const user = await User.findOne({
+      where: { confirmationcode: req.params.confirmationcode },
     });
-};
-
-exports.index = (req, res) => {
-  User.findAll({
-    include: [
+    if (!user) {
+      return res.send("User not found!");
+    }
+    await User.update(
       {
-        model: RefreshToken,
-        as: "refreshtoken",
+        password: bcrypt.hashSync(req.body.password, 8),
       },
-    ],
-  })
-    .then((user) => {
-      return res.status(200).json(user);
-    })
-    .catch((error) => {
-      console.log("ERROR: ", error);
-      return res.status(400).json(error);
-    });
+      { where: { id: user.id } }
+    );
+    return successResponse(req, res, {});
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
 };
