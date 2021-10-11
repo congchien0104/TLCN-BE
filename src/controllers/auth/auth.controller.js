@@ -133,7 +133,9 @@ exports.signin = (req, res) => {
 };
 
 exports.verifyUser = async (req, res) => {
-  res.send("ok");
+  //res.send("ok");
+  console.log(req.params);
+  //res.send("okk");
   try {
     console.log(req.params.confirmationcode);
     const user = await User.findOne({

@@ -24,10 +24,10 @@ module.exports = (sequelize, DataTypes) => {
       as: "seats",
     });
 
-    Seat.belongsTo(models.Ticket, {
-      foreignKey: "tiketId",
-      as: "ticket",
-    });
+    // Seat.belongsTo(models.Ticket, {
+    //   foreignKey: "tiketId",
+    //   as: "ticket",
+    // });
   };
 
   return Seat;

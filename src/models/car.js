@@ -41,9 +41,16 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Car.belongsToMany(models.Route, {
-      through: "CarRoute",
+      through: "Schedule",
       foreignKey: "carId",
       as: "routes",
+    });
+    Car.hasMany(models.Schedule, {
+      foreignKey: {
+        name: "carId",
+        allowNull: false,
+      },
+      as: "schedules",
     });
   };
   return Car;

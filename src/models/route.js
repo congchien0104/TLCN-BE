@@ -25,9 +25,16 @@ module.exports = (sequelize, DataTypes) => {
   Route.associate = function (models) {
     // associations can be defined here
     Route.belongsToMany(models.Car, {
-      through: "CarRoute",
+      through: "Schedule",
       foreignKey: "routeId",
       as: "cars",
+    });
+    Route.hasMany(models.Schedule, {
+      foreignKey: {
+        name: "routeId",
+        allowNull: false,
+      },
+      as: "lines",
     });
   };
   return Route;

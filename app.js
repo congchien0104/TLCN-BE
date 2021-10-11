@@ -14,7 +14,9 @@ import errorHandler from "./src/middleware/errorHandler";
 //const userRoutes = require("./src/routes/user");
 const authRoute = require("./src/routes/auth.route");
 const userRoute = require("./src/routes/user.route");
+const companyRoute = require("./src/routes/company.route");
 const carRoute = require("./src/routes/car.route");
+const scheduleRoute = require("./src/routes/schedule.route");
 const userMiddleware = require("./src/middleware/authJwt");
 
 dotenv.config();
@@ -38,9 +40,10 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRoute);
-//app.use("/user", userRoutes);
 app.use("/user", userMiddleware.verifyToken, userRoute);
-app.use("/car", carRoute);
+app.use("/companies", companyRoute);
+app.use("/cars", carRoute);
+app.use("/schedules", scheduleRoute);
 
 // app.use('/pub', publicRoutes);
 // app.use('/api', apiMiddleware, apiRoutes);

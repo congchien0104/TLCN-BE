@@ -16,6 +16,20 @@ module.exports = (sequelize, DataTypes) => {
   );
   Schedule.associate = function (models) {
     // associations can be defined here
+    Schedule.belongsTo(models.Car, {
+      foreignKey: {
+        name: "carId",
+        allowNull: false,
+      },
+      as: "schedules",
+    });
+    Schedule.belongsTo(models.Route, {
+      foreignKey: {
+        name: "routeId",
+        allowNull: false,
+      },
+      as: "carroutes",
+    });
   };
   return Schedule;
 };
