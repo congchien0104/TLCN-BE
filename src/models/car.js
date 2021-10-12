@@ -52,6 +52,13 @@ module.exports = (sequelize, DataTypes) => {
       },
       as: "schedules",
     });
+    Car.hasMany(models.Feedback, {
+      foreignKey: {
+        name: "carId",
+        allowNull: false,
+      },
+      as: "feedbacks",
+    });
   };
   return Car;
 };

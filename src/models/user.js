@@ -51,6 +51,13 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "userId",
       as: "refreshtoken",
     });
+    User.hasMany(models.Feedback, {
+      foreignKey: {
+        name: "userId",
+        allowNull: false,
+      },
+      as: "feedbacks",
+    });
   };
   return User;
 };
