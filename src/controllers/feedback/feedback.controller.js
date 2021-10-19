@@ -78,8 +78,11 @@ const createFeedback = async (req, res) => {
 
 const updateFeedback = async (req, res) => {
   try {
+    var { userId } = req.user;
     const feedbackId = req.params.id;
-    const fb = await Feedback.findOne({ where: { id: feedbackId } });
+    const fb = await Feedback.findOne({
+      where: { id: feedbackId, userId: userId },
+    });
     if (!fb) {
       return res.status(400).send({ message: "Feedback not found!" });
     }
@@ -96,8 +99,11 @@ const updateFeedback = async (req, res) => {
 
 const deleteFeedback = async (req, res) => {
   try {
+    var { userId } = req.user;
     const feedbackId = req.params.id;
-    const fb = await Feedback.findOne({ where: { id: feedbackId } });
+    const fb = await Feedback.findOne({
+      where: { id: feedbackId, userId: userId },
+    });
     if (!fb) {
       return res.status(400).send({ message: "Feedback not found!" });
     }

@@ -58,6 +58,13 @@ module.exports = (sequelize, DataTypes) => {
       },
       as: "feedbacks",
     });
+    User.hasMany(models.Reservation, {
+      foreignKey: {
+        name: "userId",
+        allowNull: false,
+      },
+      as: "reservations",
+    });
   };
   return User;
 };

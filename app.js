@@ -18,6 +18,8 @@ const companyRoute = require("./src/routes/company.route");
 const carRoute = require("./src/routes/car.route");
 const scheduleRoute = require("./src/routes/schedule.route");
 const feedbackRoute = require("./src/routes/feedback.route");
+const reservationRoute = require("./src/routes/reservation.route");
+
 const userMiddleware = require("./src/middleware/authJwt");
 
 dotenv.config();
@@ -46,6 +48,7 @@ app.use("/companies", companyRoute);
 app.use("/cars", carRoute);
 app.use("/schedules", scheduleRoute);
 app.use("/feedbacks", userMiddleware.verifyToken, feedbackRoute);
+app.use("/reservations", userMiddleware.verifyToken, reservationRoute);
 
 // app.use('/pub', publicRoutes);
 // app.use('/api', apiMiddleware, apiRoutes);

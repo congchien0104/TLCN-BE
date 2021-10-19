@@ -59,6 +59,13 @@ module.exports = (sequelize, DataTypes) => {
       },
       as: "feedbacks",
     });
+    Car.hasMany(models.Reservation, {
+      foreignKey: {
+        name: "carId",
+        allowNull: false,
+      },
+      as: "reservations",
+    });
   };
   return Car;
 };
