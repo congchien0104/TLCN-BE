@@ -31,7 +31,8 @@ const getCar = async (req, res) => {
 
 const createCar = async (req, res) => {
   try {
-    const companyId = req.params.companyId;
+    const companyId = req.params.id;
+    console.log(req.body.name);
     const company = await Company.findOne({ where: { id: companyId } });
     if (!company) {
       return res.send({ message: "Company not found!" });
@@ -43,7 +44,7 @@ const createCar = async (req, res) => {
       station: req.body.station,
       companyId: companyId,
     });
-    return successResponse(req, res, { car });
+    return successResponse(req, res, "success");
   } catch (error) {
     return errorResponse(req, res, error.message);
   }

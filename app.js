@@ -27,7 +27,7 @@ require("./src/config/sequelize");
 
 const app = express();
 var corsOptions = {
-  origin: "http://localhost:8081",
+  origin: "http://localhost:3000",
 };
 
 app.use(cors(corsOptions));
@@ -47,7 +47,7 @@ app.use("/user", userMiddleware.verifyToken, userRoute);
 app.use("/companies", companyRoute);
 app.use("/cars", carRoute);
 app.use("/schedules", scheduleRoute);
-app.use("/feedbacks", userMiddleware.verifyToken, feedbackRoute);
+app.use("/feedbacks", feedbackRoute);
 app.use("/reservations", userMiddleware.verifyToken, reservationRoute);
 
 // app.use('/pub', publicRoutes);

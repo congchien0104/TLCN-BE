@@ -9,6 +9,6 @@ const carController = require("../controllers/car/car.controller");
 router.get("/", companyController.getAllCompanies);
 router.get("/:companyId", companyController.getCompany);
 router.post("/", companyController.createCompany);
-router.post("/:companyId/cars/", carController.createCar);
+router.post("/cars/:id", carController.createCar);
 
 module.exports = router;

@@ -62,13 +62,13 @@ const createReservation = async (req, res) => {
       receipt_number: randomstring.generate(10),
       amount: req.body.amount,
       paid_amount: req.body.paid_amount,
-      paid_date: req.body.paid_date,
+      paid_date: new Date(),
       reservation_date: new Date(),
       carId: carId,
       userId: userId,
     });
 
-    return successResponse(req, res, { reservation });
+    return successResponse(req, res, "Success");
   } catch (error) {
     return errorResponse(req, res, error.message);
   }

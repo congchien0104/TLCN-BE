@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
       },
       phone: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
       },
       address: {
         type: DataTypes.STRING,
@@ -35,6 +35,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
         unique: true,
+      },
+      disabled: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
     },
     {}

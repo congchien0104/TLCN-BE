@@ -29,17 +29,15 @@ exports.signup = (req, res) => {
           },
         }).then((roles) => {
           user.setRoles(roles).then(() => {
-            res.send({
-              message:
-                "User was registered successfully! Please check your email",
-            });
-            //return successResponse(req, res, user);
             nodemailer.sendConfirmationEmail(
               user.username,
               user.email,
               user.confirmationcode
             );
-            //res.redirect("/");
+            res.send({
+              message:
+                "User was registered successfully! Please check your email",
+            });
           });
         });
       } else {
@@ -90,7 +88,7 @@ exports.signin = (req, res) => {
         });
       }
 
-      if (user.verified != "Pending") {
+      if (user.verified != "Active") {
         return res.status(401).send({
           message: "Pending Account. Please Verify Your Email!",
         });

@@ -4,19 +4,41 @@ const { Company, Car, Route, Schedule, Seat } = db;
 
 const getAllRoutes = async (req, res) => {
   try {
-    const schedules = await Schedule.findAll({
+    const lines = await Route.findAll({
       include: [
         {
-          model: Car,
-          as: "schedules",
+          model: Schedule,
+          as: "lines",
+          include: [
+            {
+              model: Car,
+              as: "schedules",
+            },
+          ],
         },
       ],
     });
-    return successResponse(req, res, { schedules });
+    return successResponse(req, res, { lines });
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
 };
+
+// const getAllRoutes = async (req, res) => {
+//   try {
+//     const schedules = await Schedule.findAll({
+//       include: [
+//         {
+//           model: Car,
+//           as: "schedules",
+//         },
+//       ],
+//     });
+//     return successResponse(req, res, { schedules });
+//   } catch (error) {
+//     return errorResponse(req, res, error.message);
+//   }
+// };
 
 const getSheduleOfCar = async (req, res) => {
   try {

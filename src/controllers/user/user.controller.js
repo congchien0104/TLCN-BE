@@ -6,7 +6,7 @@ const { User } = db;
 const allUsers = async (req, res) => {
   try {
     const page = req.params.page || 1;
-    const limit = 2;
+    const limit = 8;
     const users = await User.findAndCountAll({
       order: [
         ["createdAt", "DESC"],
@@ -99,7 +99,7 @@ const changePassword = async (req, res) => {
     const newPass = bcrypt.hashSync(req.body.newPassword, 8);
 
     await User.update({ password: newPass }, { where: { id: userId } });
-    return successResponse(req, res, {});
+    return successResponse(req, res, "Update Password Sucessfully.");
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
