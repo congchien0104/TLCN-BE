@@ -1,15 +1,42 @@
 const db = require("../../models");
 const { successResponse, errorResponse } = require("../../helpers/index");
 const { Company, Car, Route, Schedule, Seat } = db;
+// const Sequelize = require('sequelize');
+// const Op = Sequelize.Op;
+import Sequelize, { Op } from 'sequelize';
 
 const getAllCars = async (req, res) => {
   try {
-    const cars = await Car.findAll();
+    console.log(req.query.page);
+    const page = req.query.page || 1;
+    const limit = 8;
+    const cars = await Car.findAndCountAll({
+      order: [
+        ["createdAt", "DESC"],
+        ["name", "ASC"],
+      ],
+      offset: (page - 1) * limit,
+      limit,
+    });
     return successResponse(req, res, { cars });
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
 };
+
+const searchCar = async (req, res) => {
+  const {term} = req.query;
+  console.log(term);
+  //res.send("ok");
+
+  const cars = await Car.findAll({ where: {
+      [Op.or]: {
+        name: {
+          [Op.like]: '%' + term + '%'
+        },
+      }}})
+  return successResponse(req, res, { cars });
+}
 
 const getCar = async (req, res) => {
   try {
@@ -42,6 +69,8 @@ const createCar = async (req, res) => {
       plate_number: req.body.plate_number,
       capacity: req.body.capacity,
       station: req.body.station,
+      price: req.body.price,
+      image: req.body.image,
       companyId: companyId,
     });
     return successResponse(req, res, "success");
@@ -93,4 +122,21 @@ const createCar = async (req, res) => {
 //     });
 // };
 
-module.exports = { getAllCars, getCar, createCar };
+const updateCar = async (req, res) => {
+  try {
+    const carId = req.params.carId;
+    const car = await Car.findOne({
+      where: { id: carId },
+    });
+    await Car.update(
+      { ...car, ...req.body },
+      { where: { id: carId } }
+    );
+
+    return successResponse(req, res, "Car was updated successfully.");
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+};
+
+module.exports = { getAllCars, getCar, createCar, searchCar, updateCar };

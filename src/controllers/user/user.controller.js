@@ -2,10 +2,12 @@ const bcrypt = require("bcryptjs");
 const db = require("../../models");
 const { successResponse, errorResponse } = require("../../helpers/index");
 const { User } = db;
+import Sequelize, { Op } from 'sequelize';
 
 const allUsers = async (req, res) => {
   try {
-    const page = req.params.page || 1;
+    console.log(req.query.page);
+    const page = req.query.page || 1;
     const limit = 8;
     const users = await User.findAndCountAll({
       order: [
@@ -20,6 +22,37 @@ const allUsers = async (req, res) => {
     return errorResponse(req, res, error.message);
   }
 };
+
+const allSearchUsers = async (req, res) => {
+  try {
+    const { page, search } = req.query;
+    console.log(search);
+    console.log(page);
+    const pages = page || 1;
+    console.log(pages);
+    const limit = 8;
+    const users = await User.findAndCountAll({
+      order: [
+        ["createdAt", "DESC"],
+        ["username", "ASC"],
+      ],
+      where : {
+        [Op.or]: {
+          username: {
+            [Op.like]: '%' + search + '%'
+          },
+        }
+      },
+      offset: (pages - 1) * limit,
+      limit,
+    });
+    return successResponse(req, res, { users });
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+};
+
+
 
 const profile = async (req, res) => {
   try {
@@ -78,6 +111,8 @@ const update = (req, res) => {
 
 const changePassword = async (req, res) => {
   try {
+    console.log(req.oldPassword);
+    console.log(req.newPassword);
     const { userId } = req.user;
     console.log(userId);
     const user = await User.findOne({
@@ -105,4 +140,4 @@ const changePassword = async (req, res) => {
   }
 };
 
-module.exports = { allUsers, profile, update, changePassword };
+module.exports = { allUsers, profile, update, changePassword, allSearchUsers };

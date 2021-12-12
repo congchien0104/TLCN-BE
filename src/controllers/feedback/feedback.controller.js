@@ -4,12 +4,23 @@ const { User, Car, Feedback } = db;
 
 const getAllFeedbacks = async (req, res) => {
   try {
-    const feedbacks = await Feedback.findAll();
+    console.log(req.query.page);
+    const page = req.query.page || 1;
+    const limit = 8;
+    const feedbacks = await Feedback.findAndCountAll({
+      order: [
+        ["createdAt", "DESC"],
+        ["rating", "ASC"],
+      ],
+      offset: (page - 1) * limit,
+      limit,
+    });
     return successResponse(req, res, { feedbacks });
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
 };
+
 
 const getFeedback = async (req, res) => {
   try {

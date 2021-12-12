@@ -44,10 +44,15 @@ const getCompany = async (req, res) => {
 
 const createCompany = async (req, res) => {
   try {
+    var { userId } = req.user;
     const company = await Company.create({
+      creator: userId,
       name: req.body.name,
+      email: req.body.email,
       address: req.body.address,
       phone: req.body.phone,
+      image: req.body.image,
+      disabled: false,
     });
     return successResponse(req, res, { company });
   } catch (error) {
@@ -55,4 +60,22 @@ const createCompany = async (req, res) => {
   }
 };
 
-module.exports = { getAllCompanies, getCompany, createCompany };
+const confirmed = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const disabled = false;
+    const company = await Company.findOne({
+      where: { id: id },
+    });
+    if (!company) {
+      return res.status(400).send({ message: "Company not found!" });
+    }
+    await Company.update({ disabled: disabled }, { where: { id: id } });
+
+    return successResponse(req, res, "Company was updated successfully.");
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+}
+
+module.exports = { getAllCompanies, getCompany, createCompany, confirmed };

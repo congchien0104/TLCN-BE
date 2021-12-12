@@ -19,7 +19,8 @@ const carRoute = require("./src/routes/car.route");
 const scheduleRoute = require("./src/routes/schedule.route");
 const feedbackRoute = require("./src/routes/feedback.route");
 const reservationRoute = require("./src/routes/reservation.route");
-
+const routeImage = require("./src/routes/image");
+const paymentRoute = require("./src/routes/payment.route");
 const userMiddleware = require("./src/middleware/authJwt");
 
 dotenv.config();
@@ -27,10 +28,11 @@ require("./src/config/sequelize");
 
 const app = express();
 var corsOptions = {
-  origin: "http://localhost:3000",
+  origin: ["http://localhost:3000", "http://localhost:3001"],
 };
 
 app.use(cors(corsOptions));
+
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
@@ -48,7 +50,9 @@ app.use("/companies", companyRoute);
 app.use("/cars", carRoute);
 app.use("/schedules", scheduleRoute);
 app.use("/feedbacks", feedbackRoute);
-app.use("/reservations", userMiddleware.verifyToken, reservationRoute);
+app.use("/reservations", reservationRoute);
+app.use("/payments", paymentRoute);
+app.use("/", routeImage);
 
 // app.use('/pub', publicRoutes);
 // app.use('/api', apiMiddleware, apiRoutes);

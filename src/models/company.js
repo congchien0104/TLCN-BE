@@ -15,6 +15,22 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      image: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      disabled: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
+      creator: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     },
     {}
   );

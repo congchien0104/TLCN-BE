@@ -6,6 +6,7 @@ const userController = require("../controllers/user/user.controller");
 const userValidate = require("../controllers/user/user.validate");
 
 router.get("/users", userController.allUsers);
+router.get("/users/search", userController.allSearchUsers);
 router.get("/me", userController.profile);
 router.post("/update", userController.update);
 router.post(

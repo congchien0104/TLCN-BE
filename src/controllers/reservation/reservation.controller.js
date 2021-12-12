@@ -5,7 +5,17 @@ const { User, Car, Reservation, Schedule, Route } = db;
 
 const getAllReservations = async (req, res) => {
   try {
-    const reservations = await Reservation.findAll();
+    console.log(req.query.page);
+    const page = req.query.page || 1;
+    const limit = 8;
+    const reservations = await Reservation.findAndCountAll({
+      order: [
+        ["createdAt", "DESC"],
+        ["fullname", "ASC"],
+      ],
+      offset: (page - 1) * limit,
+      limit,
+    });
     return successResponse(req, res, { reservations });
   } catch (error) {
     return errorResponse(req, res, error.message);
@@ -52,6 +62,7 @@ const createReservation = async (req, res) => {
   try {
     const { userId } = req.user;
     const carId = req.params.carId;
+    console.log(req.body);
 
     const car = await Car.findOne({ where: { id: carId } });
     if (!car) {
@@ -61,11 +72,15 @@ const createReservation = async (req, res) => {
     const reservation = await Reservation.create({
       receipt_number: randomstring.generate(10),
       amount: req.body.amount,
-      paid_amount: req.body.paid_amount,
+      paid_amount: req.body.paid_amount || 0,
       paid_date: new Date(),
       reservation_date: new Date(),
       carId: carId,
       userId: userId,
+      quantity: req.body.quantity,
+      fullname: req.body.fullname,
+      phone: req.body.phone,
+      email: req.body.email,
     });
 
     return successResponse(req, res, "Success");
