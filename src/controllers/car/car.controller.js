@@ -25,15 +25,19 @@ const getAllCars = async (req, res) => {
 };
 
 const searchCar = async (req, res) => {
-  const {term} = req.query;
-  console.log(term);
-  //res.send("ok");
-
-  const cars = await Car.findAll({ where: {
-      [Op.or]: {
-        name: {
-          [Op.like]: '%' + term + '%'
+  const {start, destination} = req.query;
+  //const destination = req.query.destination;
+  console.log(start);
+  console.log(destination);
+  //return successResponse(req, res, "ok");
+  const cars = await Route.findAll({ where: {
+      [Op.and]: {
+        starting_point: {
+          [Op.like]: '%' + start + '%'
         },
+        destination: {
+          [Op.like]: '%' + destination + '%'
+        }
       }}})
   return successResponse(req, res, { cars });
 }
