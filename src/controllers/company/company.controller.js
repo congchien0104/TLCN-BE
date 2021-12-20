@@ -43,21 +43,22 @@ const getCompany = async (req, res) => {
 };
 
 const createCompany = async (req, res) => {
-  try {
-    var { userId } = req.user;
-    const company = await Company.create({
-      creator: userId,
-      name: req.body.name,
-      email: req.body.email,
-      address: req.body.address,
-      phone: req.body.phone,
-      image: req.body.image,
-      disabled: false,
-    });
-    return successResponse(req, res, { company });
-  } catch (error) {
-    return errorResponse(req, res, error.message);
-  }
+  console.log(req.body.image);
+  // try {
+  //   var { userId } = req.user;
+  //   const company = await Company.create({
+  //     creator: userId,
+  //     name: req.body.name,
+  //     email: req.body.email,
+  //     address: req.body.address,
+  //     phone: req.body.phone,
+  //     image: req.body.image,
+  //     disabled: true,
+  //   });
+  //   return successResponse(req, res, { company });
+  // } catch (error) {
+  //   return errorResponse(req, res, error.message);
+  // }
 };
 
 const confirmed = async (req, res) => {

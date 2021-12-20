@@ -69,13 +69,13 @@ module.exports = (sequelize, DataTypes) => {
       },
       as: "reservations",
     });
-    User.hasMany(models.Contact, {
-      foreignKey: {
-        name: "contactId",
-        allowNull: false,
-      },
-      as: "contacts",
-    });
+    // User.hasMany(models.Contact, {
+    //   foreignKey: {
+    //     name: "contactId",
+    //     allowNull: false,
+    //   },
+    //   as: "contacts",
+    // });
   };
   return User;
 };

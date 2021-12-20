@@ -19,13 +19,13 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {});
   Contact.associate = function(models) {
-    Contact.belongsTo(models.User, {
-      foreignKey: {
-        name: "userId",
-        allowNull: false,
-      },
-      as: "user",
-    });
+    // Contact.belongsTo(models.User, {
+    //   foreignKey: {
+    //     name: "userId",
+    //     allowNull: false,
+    //   },
+    //   as: "user",
+    // });
   };
   return Contact;
 };

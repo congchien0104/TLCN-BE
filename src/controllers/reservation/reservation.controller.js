@@ -43,7 +43,7 @@ const getReservation = async (req, res) => {
 const getReservationOfUser = async (req, res) => {
   try {
     const userId = req.params.userId;
-    const reservation = await Reservation.findOne({
+    const reservation = await Reservation.findAll({
       where: { userId: userId },
       include: [
         {

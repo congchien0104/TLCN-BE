@@ -1,4 +1,5 @@
 "use strict";
+const randomstring = require("randomstring");
 module.exports = (sequelize, DataTypes) => {
   const Reservation = sequelize.define(
     "Reservation",
@@ -58,6 +59,23 @@ module.exports = (sequelize, DataTypes) => {
       },
       as: "cars",
     });
+  };
+  Reservation.createReservation = async function (data) {
+    let reservation = await this.create({
+      receipt_number: randomstring.generate(10),
+      amount: data.amount,
+      paid_amount: data.paid_amount || 0,
+      paid_date: new Date(),
+      reservation_date: new Date(),
+      carId: carId,
+      userId: userId,
+      quantity: data.quantity,
+      fullname: data.fullname,
+      phone: data.phone,
+      email: data.email,
+    });
+
+    return reservation;
   };
   return Reservation;
 };
