@@ -27,6 +27,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.FLOAT,
         allowNull: false,
       },
+      station_to: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      status_trip: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
     },
     {}
   );
@@ -80,6 +88,20 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false
       },
       as: 'photos'
+    });
+    Car.hasMany(models.CarSeat, {
+      foreignKey: {
+        name: 'carId',
+        allowNull: false
+      },
+      as: 'carseats'
+    });
+    Car.hasOne(models.Line, {
+      foreignKey: {
+        name: 'carId',
+        allowNull: false
+      },
+      as: 'lines'
     });
   };
   return Car;

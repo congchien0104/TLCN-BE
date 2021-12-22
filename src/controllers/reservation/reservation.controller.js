@@ -2,6 +2,7 @@ const db = require("../../models");
 const randomstring = require("randomstring");
 const { successResponse, errorResponse } = require("../../helpers/index");
 const { User, Car, Reservation, Schedule, Route } = db;
+import Sequelize, { Op } from 'sequelize';
 
 const getAllReservations = async (req, res) => {
   try {
@@ -22,17 +23,41 @@ const getAllReservations = async (req, res) => {
   }
 };
 
+// const getReservation = async (req, res) => {
+//   try {
+//     const reservationId = req.params.reservationId;
+//     const reservation = await Reservation.findOne({
+//       where: { id: reservationId },
+//       include: [
+//         {
+//           model: Car,
+//           as: "cars",
+//         },
+//       ],
+//     });
+//     return successResponse(req, res, { reservation });
+//   } catch (error) {
+//     return errorResponse(req, res, error.message);
+//   }
+// };
 const getReservation = async (req, res) => {
+  console.log("cong chien");
+  const str = "2021-10-19";
+  const now = new Date(str)
+  const endDate = new Date(`${str} 23:00:00`);
+  console.log(endDate);
   try {
-    const reservationId = req.params.reservationId;
-    const reservation = await Reservation.findOne({
-      where: { id: reservationId },
+    const carId = 4;
+    const reservation = await Reservation.findAll({
       include: [
         {
           model: Car,
           as: "cars",
         },
       ],
+      where: {  
+        reservation_date : { [Op.between]: [now, endDate] }
+       },
     });
     return successResponse(req, res, { reservation });
   } catch (error) {

@@ -1,6 +1,6 @@
 const db = require("../../models");
 const { successResponse, errorResponse } = require("../../helpers/index");
-const { Company, Car, Route, Schedule, Seat } = db;
+const { Company, Car, Route, Schedule, Seat, CarSeat, Line } = db;
 // const Sequelize = require('sequelize');
 // const Op = Sequelize.Op;
 import Sequelize, { Op } from 'sequelize';
@@ -15,6 +15,12 @@ const getAllCars = async (req, res) => {
         ["createdAt", "DESC"],
         ["name", "ASC"],
       ],
+      include: [
+        {
+          model: Line,
+          as: "lines",
+        },
+      ],
       offset: (page - 1) * limit,
       limit,
     });
@@ -24,23 +30,98 @@ const getAllCars = async (req, res) => {
   }
 };
 
+// const searchCar = async (req, res) => {
+//   const {start, destination} = req.query;
+//   //const destination = req.query.destination;
+//   console.log(start);
+//   console.log(destination);
+//   //return successResponse(req, res, "ok");
+//   const cars = await Route.findAll({ where: {
+//       [Op.and]: {
+//         starting_point: {
+//           [Op.like]: '%' + start + '%'
+//         },
+//         destination: {
+//           [Op.like]: '%' + destination + '%'
+//         }
+//       }}})
+//   return successResponse(req, res, { cars });
+// }
 const searchCar = async (req, res) => {
   const {start, destination} = req.query;
   //const destination = req.query.destination;
   console.log(start);
   console.log(destination);
   //return successResponse(req, res, "ok");
-  const cars = await Route.findAll({ where: {
-      [Op.and]: {
-        starting_point: {
+  const cars = await Line.findAll({ 
+    include: [
+      {
+        model: Car,
+        as: "lines",
+        //attributes:['name', 'station']
+      },
+    ],
+    where: {
+      [Op.or]: {
+        start: {
           [Op.like]: '%' + start + '%'
         },
         destination: {
           [Op.like]: '%' + destination + '%'
         }
-      }}})
+    }
+  }})
   return successResponse(req, res, { cars });
 }
+
+const getCasesByFilteredRecord = async (req, res) => {
+  try {
+      var where = [];
+      // iterate over the params
+      for (let q in req.query) {
+          var obj = {};
+          obj[q] = { [Op.eq]: req.query[q] };
+          console.log(obj);
+          // if q is discoveryMethod then the obj is { discoveryMethod: { [Op.eq]: req.query.discoveryMethod } }
+          where.push(obj);
+      }
+      const cars = await Line.findAll({
+          //attributes: { exclude: ['id', 'countryId', 'caseFullname', 'casePhone', 'createdAt', 'caseCommunityName', 'deletedAt'] },
+          include: [
+            {
+              model: Car,
+              as: "lines",
+              //attributes:['name', 'station']
+            },
+          ],
+          where: {
+              [Op.or]: where // assign the "where" array here
+          },
+          order: [
+              ['createdAt', 'DESC']
+          ],
+          limit: 10
+      });
+      if (cars.length === 0) {
+          return res.json({
+              message: 'There are no case records for this query. Please unselect some items.'
+          })
+      };
+      // res.status(200);
+      // res.json({
+      //     message: 'Case query records retrieved.',
+      //     data: filteredResult
+      // });
+      return successResponse(req, res, { cars });
+  } catch (err) {
+      console.log(err);
+      res.status(500)
+          .json({
+              message: "There is an error retrieving case query records!",
+              err
+          });
+  };
+};
 
 const getCar = async (req, res) => {
   try {
@@ -49,10 +130,16 @@ const getCar = async (req, res) => {
       where: { id: carId },
       include: [
         {
-          model: Seat,
-          as: "seats",
+          model: CarSeat,
+          as: "carseats",
         },
       ],
+      // include: [
+      //   {
+      //     model: Line,
+      //     as: "lines",
+      //   },
+      // ],
     });
     return successResponse(req, res, { car });
   } catch (error) {
@@ -77,7 +164,9 @@ const createCar = async (req, res) => {
       image: req.body.image,
       companyId: companyId,
     });
-    return successResponse(req, res, "success");
+    let carseat = await CarSeat.createCarSeat(car);
+    
+    return successResponse(req, res, carseat);
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
@@ -143,4 +232,4 @@ const updateCar = async (req, res) => {
   }
 };
 
-module.exports = { getAllCars, getCar, createCar, searchCar, updateCar };
+module.exports = { getAllCars, getCar, createCar, searchCar, updateCar, getCasesByFilteredRecord };

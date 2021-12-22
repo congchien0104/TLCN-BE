@@ -53,6 +53,24 @@ const isAdmin = (req, res, next) => {
   });
 };
 
+const isCompany = (req, res, next) => {
+  User.findByPk(req.userId).then((user) => {
+    user.getRoles().then((roles) => {
+      for (let i = 0; i < roles.length; i++) {
+        if (roles[i].name == "company") {
+          next();
+          return;
+        }
+      }
+
+      res.status(403).send({
+        message: "Require Company Role!",
+      });
+      return;
+    });
+  });
+};
+
 const isModerator = (req, res, next) => {
   User.findByPk(req.userId).then((user) => {
     user.getRoles().then((roles) => {
@@ -96,6 +114,7 @@ const authJwt = {
   verifyToken: verifyToken,
   isAdmin: isAdmin,
   isModerator: isModerator,
+  isCompany: isCompany,
   isModeratorOrAdmin: isModeratorOrAdmin,
 };
 module.exports = authJwt;
