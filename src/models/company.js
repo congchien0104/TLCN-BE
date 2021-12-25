@@ -43,6 +43,13 @@ module.exports = (sequelize, DataTypes) => {
       },
       as: "cars",
     });
+    Company.belongsTo(models.User, {
+      foreignKey: {
+        name: 'userId',
+        allowNull: false
+      },
+      as: 'user'
+    });
   };
   return Company;
 };

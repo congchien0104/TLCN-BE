@@ -1,7 +1,7 @@
 const db = require("../../models");
 const randomstring = require("randomstring");
 const { successResponse, errorResponse } = require("../../helpers/index");
-const { User, Car, Reservation, Schedule, Route } = db;
+const { User, Car, Reservation, Schedule, Route, CarSeat } = db;
 const paypal = require('paypal-rest-sdk');
 const paypalConfig = require('../../config/paypal');
 paypal.configure(paypalConfig);
@@ -38,10 +38,14 @@ paypal.configure(paypalConfig);
 // };
 
 const createPaypal = async (req, res) => {
-  const { id, fullname, receipt_number } = req.body;
+  const { arr, fullname, receipt_number, amount } = req.body;
 
-  //console.log(amount);
-  const amount = 200000;
+  // console.log(fullname);
+  // console.log(amount);
+  // console.log(arr);
+  // const temp = await CarSeat.updateStatus(arr);
+  // return errorResponse(req, res, temp);
+  //const amount = 200000;
   //   const date = new Date();
   //   const now = moment(date).utc().add(7, "hours").toDate();
   //   if (moment(startTime).isBefore(now, "minute"))
@@ -99,6 +103,8 @@ const createPaypal = async (req, res) => {
         for (let i = 0; i < payment.links.length; i++) {
           if (payment.links[i].rel === "approval_url") {
             //sendSuccess(res, payment.links[i].href, httpStatus.OK);
+            Reservation.createReservation(req.body);
+            CarSeat.updateStatus(arr);
             return successResponse(req, res, payment.links[i].href);
           }
         }

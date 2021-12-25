@@ -1,6 +1,6 @@
 const db = require("../../models");
 const { successResponse, errorResponse } = require("../../helpers/index");
-const { Company, Car, Route, Schedule } = db;
+const { Company, Car, Route, Schedule, User } = db;
 
 // Get all Company
 
@@ -27,16 +27,23 @@ const getCompany = async (req, res) => {
   try {
     const companyId = req.params.companyId;
     console.log(companyId);
-    const company = await Company.findOne({
+    const result = await User.findOne({
+      attributes: { exclude: ['id', 'countryId', 'caseFullname', 'casePhone', 'createdAt', 'caseCommunityName', 'deletedAt'] },
       where: { id: companyId },
       include: [
         {
-          model: Car,
-          as: "cars",
+          model: Company,
+          as: "company",
+          include: [
+            {
+              model: Car,
+              as: "cars",
+            },
+          ],
         },
       ],
     });
-    return successResponse(req, res, { company });
+    return successResponse(req, res, { result });
   } catch (error) {
     return errorResponse(req, res, error.message);
   }

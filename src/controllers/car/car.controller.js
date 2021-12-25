@@ -76,7 +76,9 @@ const searchCar = async (req, res) => {
 
 const getCasesByFilteredRecord = async (req, res) => {
   try {
+      const isAsc = "DESC";
       var where = [];
+      var price = 2000000;
       // iterate over the params
       for (let q in req.query) {
           var obj = {};
@@ -85,6 +87,69 @@ const getCasesByFilteredRecord = async (req, res) => {
           // if q is discoveryMethod then the obj is { discoveryMethod: { [Op.eq]: req.query.discoveryMethod } }
           where.push(obj);
       }
+      const cars = await Line.findAll({
+          //attributes: { exclude: ['id', 'countryId', 'caseFullname', 'casePhone', 'createdAt', 'caseCommunityName', 'deletedAt'] },
+          include: [
+            {
+              model: Car,
+              as: "lines",
+              where: { 
+                price: {
+                  [Op.lte]: price
+                }
+              },
+              order: [['price', 'DESC']]
+              //attributes:['name', 'station']
+            },
+          ],
+          where: {
+              [Op.or]: where // assign the "where" array here
+          },
+          limit: 10
+      });
+      if (cars.length === 0) {
+          return res.json({
+              message: 'There are no case records for this query. Please unselect some items.'
+          })
+      };
+      // res.status(200);
+      // res.json({
+      //     message: 'Case query records retrieved.',
+      //     data: filteredResult
+      // });
+      return successResponse(req, res, { cars });
+  } catch (err) {
+      console.log(err);
+      res.status(500)
+          .json({
+              message: "There is an error retrieving case query records!",
+              err
+          });
+  };
+};
+
+const tempTest = async (req, res) => {
+  try {
+      // var where = [];
+      // // iterate over the params
+      // for (let q in req.query) {
+      //     var obj = {};
+      //     obj[q] = { [Op.eq]: req.query[q] };
+      //     console.log(obj);
+      //     // if q is discoveryMethod then the obj is { discoveryMethod: { [Op.eq]: req.query.discoveryMethod } }
+      //     where.push(obj);
+      // }
+      let start = req.query.start;
+      let destination = req.query.destination;
+      let price = req.query.price;
+      //let delivery = req.query.delivery
+      let options = { where: {} };
+      if (start)
+          options.where.start = start
+      if (price)
+          options.where.price = {$between: [0, price]}
+      if (destination)
+          options.where.destination = destination
       const cars = await Line.findAll({
           //attributes: { exclude: ['id', 'countryId', 'caseFullname', 'casePhone', 'createdAt', 'caseCommunityName', 'deletedAt'] },
           include: [
@@ -122,7 +187,6 @@ const getCasesByFilteredRecord = async (req, res) => {
           });
   };
 };
-
 const getCar = async (req, res) => {
   try {
     const carId = req.params.carId;
@@ -160,8 +224,10 @@ const createCar = async (req, res) => {
       plate_number: req.body.plate_number,
       capacity: req.body.capacity,
       station: req.body.station,
+      station_to: req.body.station_to,
       price: req.body.price,
       image: req.body.image,
+      status_trip: false,
       companyId: companyId,
     });
     let carseat = await CarSeat.createCarSeat(car);
@@ -172,27 +238,23 @@ const createCar = async (req, res) => {
   }
 };
 
-// const getCarOfCompany = (req, res) => {
-//   const id = req.params.id;
-//   Company.findByPk(id, {
-//     include: [
-//       {
-//         model: Car,
-//         as: "cars",
-//       },
-//     ],
-//   })
-//     .then((company) => {
-//       if (!company) {
-//         return res.status(404).json({ message: "Company Not Found" });
-//       }
-
-//       return res.status(200).json(company);
-//     })
-//     .catch((error) => {
-//       return res.status(400).json(error);
-//     });
-// };
+const getCarOfCompany = async (req, res) => {
+  try {
+    const id = req.params.companyId;
+    const cars = await Company.findAll({
+      where: { id: id },
+      include: [
+        {
+          model: Car,
+          as: "cars",
+        },
+      ],
+    });
+    return successResponse(req, res, { cars });
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+};
 
 // const getCar = (req, res) => {
 //   //const id = req.params.id;
@@ -232,4 +294,4 @@ const updateCar = async (req, res) => {
   }
 };
 
-module.exports = { getAllCars, getCar, createCar, searchCar, updateCar, getCasesByFilteredRecord };
+module.exports = { getAllCars, getCar, createCar, searchCar, updateCar, getCarOfCompany, getCasesByFilteredRecord };

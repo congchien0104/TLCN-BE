@@ -65,11 +65,11 @@ const getReservation = async (req, res) => {
   }
 };
 
-const getReservationOfUser = async (req, res) => {
+const getReservationOfCar = async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const carId = req.params.carId;
     const reservation = await Reservation.findAll({
-      where: { userId: userId },
+      where: { carId: carId },
       include: [
         {
           model: Car,
@@ -117,6 +117,6 @@ const createReservation = async (req, res) => {
 module.exports = {
   getAllReservations,
   getReservation,
-  getReservationOfUser,
+  getReservationOfCar,
   createReservation,
 };

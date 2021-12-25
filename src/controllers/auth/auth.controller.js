@@ -206,12 +206,12 @@ exports.forgot = async (req, res) => {
     if (!user) {
       return res.send("Email not found!");
     }
-    nodemailer.sendConfirmationEmail(
+    nodemailer.sendPasswordResetEmail(
       user.username,
       user.email,
       user.confirmationcode
     );
-    return successResponse(req, res, {});
+    return successResponse(req, res, true);
   } catch (error) {
     return errorResponse(req, res, error.message);
   }

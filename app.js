@@ -22,6 +22,7 @@ const reservationRoute = require("./src/routes/reservation.route");
 const routeImage = require("./src/routes/image");
 const paymentRoute = require("./src/routes/payment.route");
 const contactRoute = require("./src/routes/contact.route");
+const lineRoute = require("./src/routes/line.route");
 const userMiddleware = require("./src/middleware/authJwt");
 
 dotenv.config();
@@ -54,6 +55,7 @@ app.use("/feedbacks", feedbackRoute);
 app.use("/reservations", reservationRoute);
 app.use("/contacts", contactRoute);
 app.use("/payments", paymentRoute);
+app.use("/lines", lineRoute);
 app.use("/", routeImage);
 
 // app.use('/pub', publicRoutes);

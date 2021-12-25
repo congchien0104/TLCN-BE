@@ -28,6 +28,12 @@ module.exports = (sequelize, DataTypes) => {
       }
       return true;
     };
+    CarSeat.updateStatus = async function (arr) {
+      for(var i = 0; i <arr.length; i++){
+        let carSeat = await this.update({ status: true }, { where: { name: arr[i] } });
+      }
+      return true;
+    };
   };
   return CarSeat;
 };

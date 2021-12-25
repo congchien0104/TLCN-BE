@@ -29,18 +29,18 @@ exports.sendConfirmationEmail = (name, email, confirmationCode) => {
     .catch((err) => console.log(err));
 };
 
-// exports.sendPasswordResetEmail = (name, email, confirmationCode) => {
-//   console.log("Check");
-//   transport
-//     .sendMail({
-//       from: user,
-//       to: email,
-//       subject: "Please, Click to change password!",
-//       html: `<h1>Email Confirmation</h1>
-//           <h2>Hello ${name}</h2>
-//           <p>Thank you for subscribing. Please confirm your email by clicking on the following link</p>
-//           <a href=http://localhost:8081/forgot/${confirmationCode}> Click here</a>
-//           </div>`,
-//     })
-//     .catch((err) => console.log(err));
-// };
+exports.sendPasswordResetEmail = (name, email, confirmationCode) => {
+  console.log("Check");
+  transport
+    .sendMail({
+      from: user,
+      to: email,
+      subject: "Please, Click to forgot password!",
+      html: `<h1>New Password</h1>
+          <h2>Hello ${name}</h2>
+          <p>Thank you for subscribing. Please confirm your email by clicking on the following link</p>
+          <a href=http://localhost:3000/reset/${confirmationCode}> Click here</a>
+          </div>`,
+    })
+    .catch((err) => console.log(err));
+};
