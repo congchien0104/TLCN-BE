@@ -51,21 +51,22 @@ const getCompany = async (req, res) => {
 
 const createCompany = async (req, res) => {
   console.log(req.body.image);
-  // try {
-  //   var { userId } = req.user;
-  //   const company = await Company.create({
-  //     creator: userId,
-  //     name: req.body.name,
-  //     email: req.body.email,
-  //     address: req.body.address,
-  //     phone: req.body.phone,
-  //     image: req.body.image,
-  //     disabled: true,
-  //   });
-  //   return successResponse(req, res, { company });
-  // } catch (error) {
-  //   return errorResponse(req, res, error.message);
-  // }
+  try {
+    var { userId } = req.user;
+    const company = await Company.create({
+      creator: userId,
+      name: req.body.name,
+      email: req.body.email,
+      address: req.body.address,
+      phone: req.body.phone,
+      image: req.body.image,
+      disabled: true,
+      userId: userId,
+    });
+    return successResponse(req, res, { company });
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
 };
 
 const confirmed = async (req, res) => {
@@ -78,6 +79,9 @@ const confirmed = async (req, res) => {
     if (!company) {
       return res.status(400).send({ message: "Company not found!" });
     }
+    await User.findOne({id: company.userId}).then((user) => {
+      user.setRoles([1]);
+    });
     await Company.update({ disabled: disabled }, { where: { id: id } });
 
     return successResponse(req, res, "Company was updated successfully.");

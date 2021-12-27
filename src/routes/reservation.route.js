@@ -8,8 +8,8 @@ const userMiddleware = require("../../src/middleware/authJwt");
 
 
 router.get("/", reservationController.getAllReservations);
-//router.get("/:reservationId", reservationController.getReservation);
-//router.get("/:carId", reservationController.getReservation);
+router.get("/user/:reservationId", reservationController.getReservationOfUser);
+router.get("/test/:carId", reservationController.getReservation);
 router.get("/:carId", reservationController.getReservationOfCar);
 //router.post("/:carId", reservationController.createReservation);
 //router.get("/paypal", paymentController.doPaymentServicePackage);

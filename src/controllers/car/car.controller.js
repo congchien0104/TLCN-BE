@@ -76,16 +76,16 @@ const searchCar = async (req, res) => {
 
 const getCasesByFilteredRecord = async (req, res) => {
   try {
-      const isAsc = "DESC";
+      //const isAsc = "DESC";
       var where = [];
-      var price = 2000000;
-      // iterate over the params
+      const day = new Date(req.query["date"]);
+      const d = day.getDay();
       for (let q in req.query) {
-          var obj = {};
-          obj[q] = { [Op.eq]: req.query[q] };
-          console.log(obj);
-          // if q is discoveryMethod then the obj is { discoveryMethod: { [Op.eq]: req.query.discoveryMethod } }
-          where.push(obj);
+          if(q !== "date"){
+            var obj = {};
+            obj[q] = { [Op.like]: req.query[q] };
+            where.push(obj);
+          }
       }
       const cars = await Line.findAll({
           //attributes: { exclude: ['id', 'countryId', 'caseFullname', 'casePhone', 'createdAt', 'caseCommunityName', 'deletedAt'] },
@@ -93,17 +93,19 @@ const getCasesByFilteredRecord = async (req, res) => {
             {
               model: Car,
               as: "lines",
-              where: { 
-                price: {
-                  [Op.lte]: price
-                }
-              },
-              order: [['price', 'DESC']]
-              //attributes:['name', 'station']
+              // where: { 
+              //   price: {
+              //     [Op.lte]: price
+              //   }
+              // },
+              // order: [['price', 'DESC']]
             },
           ],
           where: {
-              [Op.or]: where // assign the "where" array here
+              //[Op.or]: where, // assign the "where" array here
+              weekdays: {
+                [Op.substring]: `${d}`
+              },
           },
           limit: 10
       });
@@ -112,19 +114,11 @@ const getCasesByFilteredRecord = async (req, res) => {
               message: 'There are no case records for this query. Please unselect some items.'
           })
       };
-      // res.status(200);
-      // res.json({
-      //     message: 'Case query records retrieved.',
-      //     data: filteredResult
-      // });
+      console.log(req.query["date"]);
+
       return successResponse(req, res, { cars });
   } catch (err) {
-      console.log(err);
-      res.status(500)
-          .json({
-              message: "There is an error retrieving case query records!",
-              err
-          });
+    return errorResponse(req, res, err.message);
   };
 };
 

@@ -38,31 +38,10 @@ paypal.configure(paypalConfig);
 // };
 
 const createPaypal = async (req, res) => {
-  const { arr, fullname, receipt_number, amount } = req.body;
+  const { arr, fullname, receipt_number, amount, reservations_date } = req.body;
 
-  // console.log(fullname);
-  // console.log(amount);
-  // console.log(arr);
-  // const temp = await CarSeat.updateStatus(arr);
-  // return errorResponse(req, res, temp);
-  //const amount = 200000;
-  //   const date = new Date();
-  //   const now = moment(date).utc().add(7, "hours").toDate();
-  //   if (moment(startTime).isBefore(now, "minute"))
-  //     throw new ApiError(httpStatus.NOT_FOUND, "Giờ hẹn không còn hợp lệ");
-  //   req.body.endTime = moment(startTime).add(duration, "m").toDate();
-  //   req.body.customer = req.user._id;
-  //   const paymentType = payNow ? "FullyPaid" : "PartialPaid";
-  //   const money = payNow ? price : hasDeposit ? depositPrice : -1;
-  //   const paymentBill = payNow ? "thanh toán phí dịch vụ" : "thanh toán phí cọc";
-  //   delete req.body.duration;
-  //   delete req.body.payNow;
-  //   //   xác định số tiền cần thanh toán
-  //   const serviceDetail = await serviceService.getServiceById(service);
-  //   if (!serviceDetail)
-  //     throw new ApiError(httpStatus.NOT_FOUND, "Dịch vụ không tồn tại");
-  //   const appointment = await appointmentService.createAppointment(req.body);
-  // Nếu thanh toán
+  
+  //Nếu thanh toán
   if (amount > 0) {
     const costUSD = Math.round((amount / 22600) * 100) / 100;
     console.log("ok", costUSD);
@@ -104,7 +83,7 @@ const createPaypal = async (req, res) => {
           if (payment.links[i].rel === "approval_url") {
             //sendSuccess(res, payment.links[i].href, httpStatus.OK);
             Reservation.createReservation(req.body);
-            CarSeat.updateStatus(arr);
+            //CarSeat.updateStatus(arr);
             return successResponse(req, res, payment.links[i].href);
           }
         }

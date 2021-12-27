@@ -58,7 +58,10 @@ const profile = async (req, res) => {
   try {
     const { userId } = req.user;
     //console.log(req.user);
-    const user = await User.findOne({ where: { id: userId } });
+    const user = await User.findOne({ 
+      attributes: { exclude: ['id', 'password', 'confirmationcode','createdAt'] },
+      where: { id: userId } 
+    });
     return successResponse(req, res, { user });
   } catch (error) {
     return errorResponse(req, res, error.message);

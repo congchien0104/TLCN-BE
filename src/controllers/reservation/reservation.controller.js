@@ -23,40 +23,38 @@ const getAllReservations = async (req, res) => {
   }
 };
 
-// const getReservation = async (req, res) => {
-//   try {
-//     const reservationId = req.params.reservationId;
-//     const reservation = await Reservation.findOne({
-//       where: { id: reservationId },
-//       include: [
-//         {
-//           model: Car,
-//           as: "cars",
-//         },
-//       ],
-//     });
-//     return successResponse(req, res, { reservation });
-//   } catch (error) {
-//     return errorResponse(req, res, error.message);
-//   }
-// };
-const getReservation = async (req, res) => {
-  console.log("cong chien");
-  const str = "2021-10-19";
-  const now = new Date(str)
-  const endDate = new Date(`${str} 23:00:00`);
-  console.log(endDate);
+const getReservationOfUser = async (req, res) => {
   try {
-    const carId = 4;
+    const reservationId = req.params.reservationId;
     const reservation = await Reservation.findAll({
+      where: { id: reservationId },
       include: [
         {
           model: Car,
           as: "cars",
         },
       ],
-      where: {  
-        reservation_date : { [Op.between]: [now, endDate] }
+    });
+    return successResponse(req, res, { reservation });
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+};
+const getReservation = async (req, res) => {
+  try {
+    const carId = req.params.carId;
+    console.log(carId);
+    const d = req.query.date;
+    const reservation = await Reservation.findAll({
+      attributes: ['position'],
+      // include: [
+      //   {
+      //     model: Car,
+      //     as: "cars",
+      //   },
+      // ],
+      where: {  carId: carId,
+        reservation_date : { [Op.substring]: `${d}` }
        },
     });
     return successResponse(req, res, { reservation });
@@ -118,5 +116,6 @@ module.exports = {
   getAllReservations,
   getReservation,
   getReservationOfCar,
+  getReservationOfUser,
   createReservation,
 };

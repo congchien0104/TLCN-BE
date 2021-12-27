@@ -52,6 +52,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      position: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     },
     {}
   );
@@ -74,12 +78,13 @@ module.exports = (sequelize, DataTypes) => {
   };
   Reservation.createReservation = async function (data) {
     console.log(data);
+    const temp = data.arr;
     let reservation = await this.create({
       receipt_number: randomstring.generate(10),
       amount: data.amount,
       paid_amount: data.amount,
       paid_date: new Date(),
-      reservation_date: new Date(),
+      reservation_date: new Date(data.reservations_date),
       carId: data.carId,
       userId: 14,
       quantity: data.quantity,
@@ -88,7 +93,8 @@ module.exports = (sequelize, DataTypes) => {
       email: data.email,
       cccd: data.cccd,
       pickup_place: data.pickup_place,
-      dropoff_place: data.dropoff_place
+      dropoff_place: data.dropoff_place,
+      position: temp.join(",")
     });
 
     return reservation;
