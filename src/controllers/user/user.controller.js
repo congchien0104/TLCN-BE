@@ -143,4 +143,22 @@ const changePassword = async (req, res) => {
   }
 };
 
-module.exports = { allUsers, profile, update, changePassword, allSearchUsers };
+const disabledUser = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const disabled = req.body.disabled;
+    const user = await User.findOne({
+      where: { id: id },
+    });
+    if (!user) {
+      return res.status(400).send({ message: "User not found!" });
+    }
+    await User.update({ disabled: disabled }, { where: { id: id } });
+
+    return successResponse(req, res, "User was disabled successfully.");
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+}
+
+module.exports = { allUsers, profile, update, changePassword, allSearchUsers, disabledUser };

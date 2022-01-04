@@ -1,6 +1,6 @@
 const db = require("../../models");
 const { successResponse, errorResponse } = require("../../helpers/index");
-const { Company, Car, Route, Schedule, User } = db;
+const { Company, Car, Route, Schedule, User, Line } = db;
 
 // Get all Company
 
@@ -25,11 +25,12 @@ const getAllCompanies = async (req, res) => {
 
 const getCompany = async (req, res) => {
   try {
-    const companyId = req.params.companyId;
-    console.log(companyId);
+    //const companyId = req.params.companyId;
+    var { userId } = req.user;
+    console.log(userId);
     const result = await User.findOne({
       attributes: { exclude: ['id', 'countryId', 'caseFullname', 'casePhone', 'createdAt', 'caseCommunityName', 'deletedAt'] },
-      where: { id: companyId },
+      where: { id: userId },
       include: [
         {
           model: Company,
@@ -80,7 +81,7 @@ const confirmed = async (req, res) => {
       return res.status(400).send({ message: "Company not found!" });
     }
     await User.findOne({id: company.userId}).then((user) => {
-      user.setRoles([1]);
+      user.setRoles([2]);
     });
     await Company.update({ disabled: disabled }, { where: { id: id } });
 

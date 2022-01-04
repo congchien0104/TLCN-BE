@@ -9,5 +9,6 @@ const router = express.Router();
 //= ===============================
 router.get("/users", userController.allUsers);
 router.get("/users/search", userController.allSearchUsers);
+router.put("/users/:id", userController.disabledUser);
 
 module.exports = router;

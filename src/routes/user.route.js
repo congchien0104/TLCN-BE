@@ -9,6 +9,7 @@ router.get("/users", userController.allUsers);
 router.get("/users/search", userController.allSearchUsers);
 router.get("/me", userController.profile);
 router.post("/update", userController.update);
+router.put("/:id", userController.disabledUser);
 router.post(
   "/changePassword",
   validate(userValidate.changePassword),

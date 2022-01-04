@@ -94,6 +94,12 @@ exports.signin = (req, res) => {
         });
       }
 
+      if (user.disabled) {
+        return res.status(401).send({
+          message: "Tài khoản của bạn đã bị khóa.",
+        });
+      }
+
       var token = jwt.sign(
         {
           user: {

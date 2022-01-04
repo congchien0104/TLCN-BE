@@ -7,6 +7,7 @@ const carController = require("../controllers/car/car.controller");
 
 router.get("/", carController.getAllCars);
 router.get("/:carId", carController.getCar);
+router.get("/carseats/:carId", carController.getCarSeat);
 //router.get("/car/search", carController.searchCar);
 router.get("/car/search", carController.getCasesByFilteredRecord);
 router.put("/:carId", carController.updateCar);

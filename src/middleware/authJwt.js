@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config/auth");
 const db = require("../models");
-const { User } = db;
+const { User, Role, UserRole } = db;
 
 const { TokenExpiredError } = jwt;
 
@@ -35,8 +35,27 @@ const verifyToken = (req, res, next) => {
   });
 };
 
-const isAdmin = (req, res, next) => {
-  User.findByPk(req.userId).then((user) => {
+const isAdmin = async (req, res, next) => {
+  // console.log(req.user);
+  // next();
+  // const user = await User.findOne({
+  //   where: { id: req.userId },
+  //   include: [
+  //     {
+  //       model: Role,
+  //       as: "roles",
+  //       where: { name: "admin"}
+  //     },
+  //   ],
+  // });
+  // if(user){
+  //   next();
+  // }else{
+  //     res.status(403).send({
+  //     message: "Require Admin Role!",
+  //     });
+  // }
+  User.findByPk(req.user.userId).then((user) => {
     user.getRoles().then((roles) => {
       for (let i = 0; i < roles.length; i++) {
         if (roles[i].name == "admin") {

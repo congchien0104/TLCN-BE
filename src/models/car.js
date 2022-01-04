@@ -96,7 +96,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       as: 'carseats'
     });
-    Car.hasOne(models.Line, {
+    Car.hasMany(models.Line, {
       foreignKey: {
         name: 'carId',
         allowNull: false

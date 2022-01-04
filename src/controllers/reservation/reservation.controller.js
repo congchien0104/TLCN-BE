@@ -27,7 +27,7 @@ const getReservationOfUser = async (req, res) => {
   try {
     const reservationId = req.params.reservationId;
     const reservation = await Reservation.findAll({
-      where: { id: reservationId },
+      where: { userId: reservationId },
       include: [
         {
           model: Car,

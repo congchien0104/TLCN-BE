@@ -83,7 +83,7 @@ const getCasesByFilteredRecord = async (req, res) => {
       for (let q in req.query) {
           if(q !== "date"){
             var obj = {};
-            obj[q] = { [Op.like]: req.query[q] };
+            obj[q] = { [Op.eq]: req.query[q] };
             where.push(obj);
           }
       }
@@ -102,7 +102,7 @@ const getCasesByFilteredRecord = async (req, res) => {
             },
           ],
           where: {
-              //[Op.or]: where, // assign the "where" array here
+              [Op.and]: where, // assign the "where" array here
               weekdays: {
                 [Op.substring]: `${d}`
               },
@@ -114,7 +114,6 @@ const getCasesByFilteredRecord = async (req, res) => {
               message: 'There are no case records for this query. Please unselect some items.'
           })
       };
-      console.log(req.query["date"]);
 
       return successResponse(req, res, { cars });
   } catch (err) {
@@ -188,16 +187,28 @@ const getCar = async (req, res) => {
       where: { id: carId },
       include: [
         {
+          model: Line,
+          as: "lines",
+        },
+      ],
+    });
+    return successResponse(req, res, { car });
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+};
+
+const getCarSeat = async (req, res) => {
+  try {
+    const carId = req.params.carId;
+    const car = await Car.findOne({
+      where: { id: carId },
+      include: [
+        {
           model: CarSeat,
           as: "carseats",
         },
       ],
-      // include: [
-      //   {
-      //     model: Line,
-      //     as: "lines",
-      //   },
-      // ],
     });
     return successResponse(req, res, { car });
   } catch (error) {
@@ -226,7 +237,7 @@ const createCar = async (req, res) => {
     });
     let carseat = await CarSeat.createCarSeat(car);
     
-    return successResponse(req, res, carseat);
+    return successResponse(req, res, car);
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
@@ -250,27 +261,6 @@ const getCarOfCompany = async (req, res) => {
   }
 };
 
-// const getCar = (req, res) => {
-//   //const id = req.params.id;
-//   const id = 1;
-
-//   Car.findByPk(id)
-//     .then((data) => {
-//       if (data) {
-//         res.send(data);
-//       } else {
-//         res.status(404).send({
-//           message: `Cannot find Tutorial with id=${id}.`,
-//         });
-//       }
-//     })
-//     .catch((err) => {
-//       res.status(500).send({
-//         message: "Error retrieving Tutorial with id=" + id,
-//       });
-//     });
-// };
-
 const updateCar = async (req, res) => {
   try {
     const carId = req.params.carId;
@@ -288,4 +278,4 @@ const updateCar = async (req, res) => {
   }
 };
 
-module.exports = { getAllCars, getCar, createCar, searchCar, updateCar, getCarOfCompany, getCasesByFilteredRecord };
+module.exports = { getAllCars, getCar, createCar, searchCar, updateCar, getCarSeat, getCarOfCompany, getCasesByFilteredRecord };

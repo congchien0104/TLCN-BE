@@ -23,7 +23,7 @@ const routeImage = require("./src/routes/image");
 const paymentRoute = require("./src/routes/payment.route");
 const contactRoute = require("./src/routes/contact.route");
 const lineRoute = require("./src/routes/line.route");
-const userMiddleware = require("./src/middleware/authJwt");
+const authJwt = require("./src/middleware/authJwt");
 
 dotenv.config();
 require("./src/config/sequelize");
@@ -47,8 +47,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRoute);
-app.use("/user", userMiddleware.verifyToken, userRoute);
-app.use("/companies", companyRoute);
+app.use("/user", authJwt.verifyToken, userRoute);
+app.use("/companies", authJwt.verifyToken, companyRoute);
 app.use("/cars", carRoute);
 app.use("/schedules", scheduleRoute);
 app.use("/feedbacks", feedbackRoute);
@@ -60,7 +60,7 @@ app.use("/", routeImage);
 
 // app.use('/pub', publicRoutes);
 // app.use('/api', apiMiddleware, apiRoutes);
-app.use('/api/admin', userMiddleware.verifyToken, userMiddleware.verifyToken, adminRoutes);
+app.use('/api/admin', [authJwt.verifyToken, authJwt.isAdmin], adminRoutes);
 app.use(errorHandler);
 
 module.exports = app;

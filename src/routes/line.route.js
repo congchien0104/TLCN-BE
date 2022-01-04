@@ -7,5 +7,7 @@ const lineController = require("../controllers/line/line.controller");
 
 
 router.post("/:id", lineController.createLine);
+router.get("/:id", lineController.getLines);
+router.put("/:id", lineController.updateLine);
 
 module.exports = router;
