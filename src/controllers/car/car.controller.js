@@ -78,10 +78,18 @@ const getCasesByFilteredRecord = async (req, res) => {
   try {
       //const isAsc = "DESC";
       var where = [];
-      const day = new Date(req.query["date"]);
-      const d = day.getDay();
+      
       for (let q in req.query) {
-          if(q !== "date"){
+          if(q === "date"){
+            const day = new Date(req.query["date"]);
+            const d = day.getDay();
+            console.log(d);
+          }
+          if(q === "price"){
+            const p = req.query[q];
+            console.log(p);
+          }
+          else{
             var obj = {};
             obj[q] = { [Op.eq]: req.query[q] };
             where.push(obj);
@@ -102,7 +110,7 @@ const getCasesByFilteredRecord = async (req, res) => {
             },
           ],
           where: {
-              [Op.and]: where, // assign the "where" array here
+              [Op.or]: where, // assign the "where" array here
               weekdays: {
                 [Op.substring]: `${d}`
               },
